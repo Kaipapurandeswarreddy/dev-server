@@ -10,8 +10,14 @@ firebase_cred_json = os.environ.get("FIREBASE_CREDENTIALS")
 if firebase_cred_json:
     cred_dict = json.loads(firebase_cred_json)
     cred = credentials.Certificate(cred_dict)
-else:
+elif os.path.exists("certificates/firebase-key.json"):
     cred = credentials.Certificate("certificates/firebase-key.json")
+elif os.path.exists("firebase-key.json"):
+    cred = credentials.Certificate("firebase-key.json")
+elif os.path.exists("/etc/secrets/firebase-key.json"):
+    cred = credentials.Certificate("/etc/secrets/firebase-key.json")
+else:
+    raise FileNotFoundError("Firebase credentials not found!")
 
 firebase_app = firebase_admin.initialize_app(cred)
 

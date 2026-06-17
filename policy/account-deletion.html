@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ambigo: Request Account Deletion</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Ambigo: Request Account Deletion</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form id="deletionForm">
+          <div class="mb-3">
+            <label for="mobileNumber" class="form-label">Mobile Number</label>
+            <input type="text" class="form-control" id="mobileNumber" maxlength="10" placeholder="Enter 10-digit mobile number" required>
+          </div>
+          <button type="submit" class="btn btn-danger w-100">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('deletionForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const mobileInput = document.getElementById('mobileNumber').value;
+      const mobileRegex = /^\d{10}$/;
+
+      if (mobileRegex.test(mobileInput)) {
+        alert("Request raised");
+      } else {
+        alert("Please enter a valid 10-digit mobile number");
+      }
+    });
+  </script>
+</body>
+</html>

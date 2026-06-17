@@ -1,0 +1,24 @@
+#!/bin/bash
+
+NAME=ambigo-server
+DIR=/home/ambigo_in/server
+USER=ambigo_in
+GROUP=ambigo_in
+WORKERS=3
+WORKER_CLASS=uvicorn.workers.UvicornWorker
+VENV=$DIR/venv/bin/activate
+BIND=unix:$DIR/deployment/run/gunicorn.sock
+LOG_LEVEL=error
+
+cd $DIR
+source $VENV
+
+exec gunicorn main:fastAPI \
+  --name $NAME \
+  --workers $WORKERS \
+  --worker-class $WORKER_CLASS \
+  --user=$USER \
+  --group=$GROUP \
+  --bind=$BIND \
+  --log-level=$LOG_LEVEL \
+  --log-file=-

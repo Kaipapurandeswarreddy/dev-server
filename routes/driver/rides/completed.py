@@ -1,0 +1,27 @@
+from fastapi import APIRouter, Request, HTTPException, Depends
+from typing import Optional, List
+
+from config.auth import verify_jwt_driver
+import repos.ride.model as ride
+
+router = APIRouter()
+
+
+@router.post("/list")
+async def list_rides_route(request: Request, uid: str = Depends(verify_jwt_driver)) -> List[ride.Ride]:
+    query = {"user_id": uid} if 'user' in request.url.path else {"driver_id": uid}
+    rides = await ride.list_rides(ride.COMPLETED, query)
+    
+    hl = request.headers.get("Accept-Language", "en")
+    if hl != "en" and rides:
+        from utils.translation import translate_single_field
+        import asyncio
+        async def translate_ride(r_item):
+            if hasattr(r_item, 'pickupAddress') and r_item.pickupAddress:
+                r_item.pickupAddress = await translate_single_field(r_item.pickupAddress, hl)
+            if hasattr(r_item, 'dropAddress') and r_item.dropAddress:
+                r_item.dropAddress = await translate_single_field(r_item.dropAddress, hl)
+        
+        await asyncio.gather(*(translate_ride(r) for r in rides))
+        
+    return rides
